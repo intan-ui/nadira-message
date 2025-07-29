@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secret Message for Nadira</title>
+  <title>Confession to Nadira</title>
   <style>
     body {
       display: flex;
@@ -16,12 +16,12 @@
       font-family: 'Comic Sans MS', Arial, sans-serif;
       overflow: hidden;
     }
-    .welcome, .transition, .message-container {
+    .welcome, .transition {
       display: none;
       text-align: center;
-      z-index: 10; /* Ensure it's above other elements */
+      z-index: 10;
     }
-    .welcome.active, .transition.active, .message-container.active {
+    .welcome.active, .transition.active {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -74,10 +74,7 @@
       }
     }
     canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1; /* Below interactive elements */
+      display: none; /* Remove canvas since we're redirecting */
     }
     .cat {
       width: 150px;
@@ -99,93 +96,19 @@
   </style>
 </head>
 <body>
-  <canvas id="canvas"></canvas>
+  <canvas id="canvas"></canvas> <!-- Kept but hidden -->
   <div class="welcome active">
-    <h1>Hey Nadira! A Secret Awaits! 🎉</h1>
-    <button onclick="startReveal()">Open Your Message!</button>
+    <h1>Nad!!! Ada benda nak bagitau! 🎉</h1>
+    <button onclick="startReveal()">Tekan Sini!</button>
   </div>
   <div class="transition">
-    <h2>Something Sweet is Coming... 💖</h2>
-  </div>
-  <div class="message-container">
+    <h2>Something Cringe is Coming... 💖</h2>
     <img class="cat" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjZ0eG5qN2N2c3h5NWV2d3o5YzZ0cXpmN3ZydmVpb3dwd3k2eTB2cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JIX9t2j0ZTN9S/giphy.gif" alt="Dancing Cat">
   </div>
   <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    function generateCharDots(char, x, y) {
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = canvas.width;
-      tempCanvas.height = canvas.height;
-      const tempCtx = tempCanvas.getContext('2d');
-      tempCtx.font = `bold 40px 'Comic Sans MS'`;
-      tempCtx.fillStyle = "#ff69b4";
-      tempCtx.textAlign = "center";
-      tempCtx.textBaseline = "middle";
-      tempCtx.fillText(char, x, y);
-
-      const imageData = tempCtx.getImageData(0, 0, canvas.width, canvas.height).data;
-      const charDots = [];
-      for (let y = 0; y < canvas.height; y += 4) {
-        for (let x = 0; x < canvas.width; x += 4) {
-          const index = (y * canvas.width + x) * 4;
-          if (imageData[index + 3] > 128) {
-            charDots.push({ x, y });
-          }
-        }
-      }
-      return charDots;
-    }
-
-    function drawHeart(x, y, size) {
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.bezierCurveTo(x - size/2, y - size, x - size, y - size/2, x, y + size/2);
-      ctx.bezierCurveTo(x + size, y - size/2, x + size/2, y - size, x, y);
-      ctx.fillStyle = 'red';
-      ctx.fill();
-      ctx.closePath();
-    }
-
-    function animateText() {
-      const message = "Miss you Nadira Amiruddin 😻".split('');
-      let index = 0;
-      const interval = setInterval(() => {
-        if (index < message.length) {
-          const char = message[index];
-          const dots = generateCharDots(char, canvas.width / 2 + (index - message.length / 2) * 30, canvas.height / 2);
-          let heartY = canvas.height - 100;
-          const heartInterval = setInterval(() => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawHeart(canvas.width / 2 + (index - message.length / 2) * 30, heartY, 20);
-            heartY -= 5;
-            if (heartY < canvas.height / 2) {
-              clearInterval(heartInterval);
-              dots.forEach(dot => {
-                ctx.fillStyle = '#ff69b4';
-                ctx.fillRect(dot.x, dot.y, 2, 2);
-              });
-              index++;
-            }
-          }, 50);
-        } else {
-          clearInterval(interval);
-        }
-      }, 200);
-    }
-
     function startReveal() {
       const welcome = document.querySelector('.welcome');
       const transition = document.querySelector('.transition');
-      const messageContainer = document.querySelector('.message-container');
 
       welcome.classList.remove('active');
       transition.classList.add('active');
@@ -199,11 +122,9 @@
         transition.appendChild(heart);
       }
 
-      // Move to final message after 3 seconds
+      // Redirect after 3 seconds
       setTimeout(() => {
-        transition.classList.remove('active');
-        messageContainer.classList.add('active');
-        animateText();
+        window.location.href = 'https://shooting-heart-pro.vercel.app/Shooting%20Heart/view.html?line1=Miss%2520You%2520Nadira%2520Amiruddin';
       }, 3000);
     }
   </script>
