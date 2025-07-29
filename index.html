@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confession for Nadira</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #ffe6f0;
+      font-family: 'Comic Sans MS', Arial, sans-serif;
+      overflow: hidden;
+    }
+    .welcome, .transition, .message-container {
+      display: none;
+      text-align: center;
+    }
+    .welcome.active, .transition.active, .message-container.active {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .welcome h1 {
+      font-size: 2em;
+      color: #ff69b4;
+      text-shadow: 1px 1px #fff;
+    }
+    .welcome button {
+      padding: 15px 30px;
+      font-size: 1.5em;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+    .welcome button:hover {
+      transform: scale(1.1);
+    }
+    .transition {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+    }
+    .heart {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: url('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2Y3c2NqN3pud3I4c3R1b3F3d3Z3dzF0cG1nZnZ1a3F5b3F1c2g5OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3orieVlsN1jAIW7zS8/giphy.gif') no-repeat center;
+      background-size: cover;
+      animation: float 4s infinite;
+    }
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    .cat {
+      width: 150px;
+      animation: dance 3s infinite alternate;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    @keyframes dance {
+      0% {
+        transform: translateX(-50%) rotate(5deg);
+      }
+      100% {
+        transform: translateX(-50%) rotate(-5deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <div class="welcome active">
+    <h1>Nad!!! Ada benda ni nak cakap! 🎉</h1>
+    <button onclick="startReveal()">Tekan Sini!</button>
+  </div>
+  <div class="transition">
+    <h2>Something Cringe is Coming... 💖</h2>
+  </div>
+  <div class="message-container active">
+    <img class="cat" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjZ0eG5qN2N2c3h5NWV2d3o5YzZ0cXpmN3ZydmVpb3dwd3k2eTB2cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JIX9t2j0ZTN9S/giphy.gif" alt="Dancing Cat">
+  </div>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function generateCharDots(char, x, y) {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.font = `bold 40px 'Comic Sans MS'`;
+      tempCtx.fillStyle = "#ff69b4";
+      tempCtx.textAlign = "center";
+      tempCtx.textBaseline = "middle";
+      tempCtx.fillText(char, x, y);
+
+      const imageData = tempCtx.getImageData(0, 0, canvas.width, canvas.height).data;
+      const charDots = [];
+      for (let y = 0; y < canvas.height; y += 4) {
+        for (let x = 0; x < canvas.width; x += 4) {
+          const index = (y * canvas.width + x) * 4;
+          if (imageData[index + 3] > 128) {
+            charDots.push({ x, y });
+          }
+        }
+      }
+      return charDots;
+    }
+
+    function drawHeart(x, y, size) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.bezierCurveTo(x - size/2, y - size, x - size, y - size/2, x, y + size/2);
+      ctx.bezierCurveTo(x + size, y - size/2, x + size/2, y - size, x, y);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function animateText() {
+      const message = "Miss you Nadira Amiruddin 😻".split('');
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < message.length) {
+          const char = message[index];
+          const dots = generateCharDots(char, canvas.width / 2 + (index - message.length / 2) * 30, canvas.height / 2);
+          let heartY = canvas.height - 100;
+          const heartInterval = setInterval(() => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawHeart(canvas.width / 2 + (index - message.length / 2) * 30, heartY, 20);
+            heartY -= 5;
+            if (heartY < canvas.height / 2) {
+              clearInterval(heartInterval);
+              dots.forEach(dot => {
+                ctx.fillStyle = '#ff69b4';
+                ctx.fillRect(dot.x, dot.y, 2, 2);
+              });
+              index++;
+            }
+          }, 50);
+        } else {
+          clearInterval(interval);
+        }
+      }, 200);
+    }
+
+    function startReveal() {
+      const welcome = document.querySelector('.welcome');
+      const transition = document.querySelector('.transition');
+      const messageContainer = document.querySelector('.message-container');
+
+      welcome.classList.remove('active');
+      transition.classList.add('active');
+
+      // Create floating hearts
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.classList.add('heart');
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.animationDelay = `${Math.random() * 3}s`;
+        transition.appendChild(heart);
+      }
+
+      // Move to final message after 3 seconds
+      setTimeout(() => {
+        transition.classList.remove('active');
+        messageContainer.classList.add('active');
+        animateText();
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
