@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Confession for Nadira</title>
+  <title>Secret Message for Nadira</title>
   <style>
     body {
       display: flex;
@@ -19,12 +19,14 @@
     .welcome, .transition, .message-container {
       display: none;
       text-align: center;
+      z-index: 10; /* Ensure it's above other elements */
     }
     .welcome.active, .transition.active, .message-container.active {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      z-index: 10;
     }
     .welcome h1 {
       font-size: 2em;
@@ -75,7 +77,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      z-index: 1;
+      z-index: 1; /* Below interactive elements */
     }
     .cat {
       width: 150px;
@@ -99,13 +101,13 @@
 <body>
   <canvas id="canvas"></canvas>
   <div class="welcome active">
-    <h1>Nad!!! Ada benda ni nak cakap! 🎉</h1>
-    <button onclick="startReveal()">Tekan Sini!</button>
+    <h1>Hey Nadira! A Secret Awaits! 🎉</h1>
+    <button onclick="startReveal()">Open Your Message!</button>
   </div>
   <div class="transition">
-    <h2>Something Cringe is Coming... 💖</h2>
+    <h2>Something Sweet is Coming... 💖</h2>
   </div>
-  <div class="message-container active">
+  <div class="message-container">
     <img class="cat" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjZ0eG5qN2N2c3h5NWV2d3o5YzZ0cXpmN3ZydmVpb3dwd3k2eTB2cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JIX9t2j0ZTN9S/giphy.gif" alt="Dancing Cat">
   </div>
   <script>
@@ -192,8 +194,8 @@
       for (let i = 0; i < 20; i++) {
         const heart = document.createElement('div');
         heart.classList.add('heart');
-        heart.style.left = `${Math.random() * 100}%`;
-        heart.style.animationDelay = `${Math.random() * 3}s`;
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDelay = Math.random() * 3 + 's';
         transition.appendChild(heart);
       }
 
